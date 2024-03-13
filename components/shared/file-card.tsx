@@ -17,7 +17,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DownloadIcon, EllipsisVertical, FileTextIcon, GanttChartIcon, ImageIcon, TextIcon, Trash2Icon } from "lucide-react"
+import { DownloadIcon, EllipsisVertical, FileTextIcon, GanttChartIcon, ImageIcon, StarIcon, TextIcon, Trash2Icon } from "lucide-react"
 
 import {
     AlertDialog,
@@ -47,6 +47,7 @@ function getFileUrl(fileId: Id<"_storage">  /* Doc<"files">["_id"] */): string {
 
 export default function FileCard({ file }: FileCardProps) {
     const deleteFile = useMutation(api.files.deleteFile)
+    const toogleFavorite = useMutation(api.files.toogleFavorite)
 
     const typeIcons = {
         "image": <ImageIcon />,
@@ -62,6 +63,7 @@ export default function FileCard({ file }: FileCardProps) {
                 {/* <CardDescription>Card Description</CardDescription> */}
                 <FileCardActions
                     deleteFile={deleteFile}
+                    toogleFavorite={toogleFavorite}
                     fileId={file._id}
                     fileIdStorage={file.fileId}
                 />
@@ -73,6 +75,7 @@ export default function FileCard({ file }: FileCardProps) {
                         width="200"
                         height="100"
                         alt={file.name}
+                        className="h-[200px] w-full object-cover"
                     />
                 }
 
@@ -93,8 +96,11 @@ export default function FileCard({ file }: FileCardProps) {
     )
 }
 
-function FileCardActions({ deleteFile, fileId, fileIdStorage }: {
+function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage }: {
     deleteFile: ReactMutation<FunctionReference<"mutation", "public", {
+        fileId: Id<"files">;
+    }, null>>,
+    toogleFavorite: ReactMutation<FunctionReference<"mutation", "public", {
         fileId: Id<"files">;
     }, null>>,
     fileId: Id<"files">,
@@ -112,14 +118,24 @@ function FileCardActions({ deleteFile, fileId, fileIdStorage }: {
                             <Trash2Icon className="w-4 h-4" />Delete
                         </DropdownMenuItem>
                     </AlertDialogTrigger>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem
                         onClick={() => {
-                            // oepn new tab to the file location on convex
+                            // open new tab to the file location on convex
                             window.open(getFileUrl(fileIdStorage), "_blank")
                         }}
                         className="flex gap-1 cursor-pointer"
                     >
                         <DownloadIcon className="w-4 h-4" />Download
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                        onClick={() => {
+                            toogleFavorite({ fileId })
+                        }}
+                        className="flex gap-1 cursor-pointer"
+                    >
+                        <StarIcon className="w-4 h-4" />Favorite
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

@@ -75,6 +75,7 @@ export default function UploadButton() {
 
         const types = {
             "image/png": "image",
+            "image/jpeg": "image",
             "application/pdf": 'pdf',
             "text/csv": "csv",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx"

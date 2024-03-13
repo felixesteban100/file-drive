@@ -77,3 +77,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+/* ========================================== TAILWIND STYLES */
+@layer utilities {
+  /* ===== UTILITIES */
+  .page-container{
+    @apply container mx-auto pt-12;
+  }
+
+  /* ===== ALIGNMENTS */
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
+  /* BY ME */
+  .svg-color {
+    /* filter: invert(.5) */
+    @apply brightness-0 dark:brightness-200;
+  }
+}

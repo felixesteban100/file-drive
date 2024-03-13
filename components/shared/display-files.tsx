@@ -8,18 +8,23 @@ import { useQuery } from "convex/react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 
-export default /* async */ function DisplayFiles() {
+type DisplayFilesProps = {
+    searchQuery: string;
+    favorites?: boolean;
+}
+
+export default /* async */ function DisplayFiles({ searchQuery, favorites = false }: DisplayFilesProps) {
     const { isLoaded: orgLoaded, organization } = useOrganization()
     const { isLoaded: userLoaded, user } = useUser()
 
     let orgId: string | undefined = (orgLoaded && userLoaded) ? organization?.id ?? user?.id : undefined
 
-    const files = useQuery(api.files.getFiles, orgId ? { orgId } : "skip")
+    const files = useQuery(api.files.getFiles, orgId ? { favorites: favorites, orgId, query: searchQuery } : "skip")
 
     if (files === undefined) {
         return (
             <div
-                className="min-h-full flex flex-col justify-center items-center gap-4"
+                className="flex flex-col justify-center items-center gap-4"
             >
                 {/* TODO: change this spinner to a card or cards with animate-pulse */}
                 <Loader2 className="h-24 w-24 animate-spin" />
@@ -30,17 +35,18 @@ export default /* async */ function DisplayFiles() {
 
     if (files && files?.length < 1) {
         return (
-            <div className="min-h-full flex flex-col justify-center items-center gap-4">
+            <div className="flex flex-col justify-center items-center gap-4">
                 <Image
                     src="/assets/void.svg"
                     width={200}
                     height={200}
                     alt="Image of a picture and directory icon"
                 />
-                <p className="text-2xl">You have no files uploaded now</p>
+                <p className="text-2xl">No file/s to show now</p>
             </div>
         )
     }
+
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
