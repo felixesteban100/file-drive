@@ -1,6 +1,7 @@
 import { ConvexError, v } from 'convex/values'
 import { MutationCtx, QueryCtx, mutation, query } from './_generated/server'
 import { getUser } from './users'
+import { fileTypes } from './schema';
 
 export const generateUploadUrl = mutation(async (ctx) => {
     const idenity = await ctx.auth.getUserIdentity()
@@ -19,6 +20,7 @@ export const createFile = mutation({
         name: v.string(),
         fileId: v.id("_storage"),
         orgId: v.string(),
+        type: fileTypes
     },
     async handler(ctx, args) {
         const idenity = await ctx.auth.getUserIdentity()
@@ -31,8 +33,9 @@ export const createFile = mutation({
 
         await ctx.db.insert('files', {
             name: args.name,
+            type: args.type,
             fileId: args.fileId,
-            orgId: args.orgId
+            orgId: args.orgId,
         })
     }
 })
@@ -52,5 +55,24 @@ export const getFiles = query({
         return ctx.db.query("files")
             .withIndex("by_orgId", q => q.eq('orgId', args.orgId))
             .collect()
+    }
+})
+
+export const deleteFile = mutation({
+    args: { fileId: v.id('files') },
+    async handler(ctx, args) { 
+        const idenity = await ctx.auth.getUserIdentity()
+
+        if (!idenity) throw new ConvexError('you do not have access to this org')
+
+        const file = await ctx.db.get(args.fileId)
+
+        if(!file) throw new ConvexError("no such file exists")
+
+        const hasAccess = await hasAccessToOrg(ctx, idenity.tokenIdentifier, file.orgId)
+
+        if(!hasAccess) throw new ConvexError("You don't have access to delete this file")
+
+        await ctx.db.delete(args.fileId)
     }
 })

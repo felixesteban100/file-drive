@@ -1,5 +1,5 @@
 // import { Suspense } from "react";
-import Header from "@/components/ui/shared/Header";
+import Header from "@/components/shared/header";
 import { Toaster } from "@/components/ui/sonner"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
