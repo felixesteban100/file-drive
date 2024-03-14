@@ -29,7 +29,7 @@ export default function MobileNav() {
                     <menu className="mt-8 flex w-full flex-col items-start gap-5">
                         <div className="w-full flex flex-col justify-center items-center gap-4">
                             <ModeToggle />
-                            <UserButton showName />
+                            <UserButton showName afterSignOutUrl="/"/>
                             <OrganizationSwitcher />
                         </div>
                         {navLinks.map((link) => {

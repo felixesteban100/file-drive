@@ -11,15 +11,16 @@ import Image from "next/image";
 type DisplayFilesProps = {
     searchQuery: string;
     favoritesOnly?: boolean;
+    deletedOnly?: boolean 
 }
 
-export default /* async */ function DisplayFiles({ searchQuery, favoritesOnly = false }: DisplayFilesProps) {
+export default /* async */ function DisplayFiles({ searchQuery, favoritesOnly = false, deletedOnly = false }: DisplayFilesProps) {
     const { isLoaded: orgLoaded, organization } = useOrganization()
     const { isLoaded: userLoaded, user } = useUser()
 
     let orgId: string | undefined = (orgLoaded && userLoaded) ? organization?.id ?? user?.id : undefined
 
-    const files = useQuery(api.files.getFiles, orgId ? { favorites: favoritesOnly, orgId, query: searchQuery } : "skip")
+    const files = useQuery(api.files.getFiles, orgId ? { favorites: favoritesOnly, orgId, query: searchQuery, deleted: deletedOnly } : "skip")
     const allFavorites = useQuery(api.files.getAllFavorites, orgId ? { orgId } : "skip")
 
     if (files === undefined) {
@@ -27,7 +28,7 @@ export default /* async */ function DisplayFiles({ searchQuery, favoritesOnly = 
             <div
                 className="flex flex-col justify-center items-center gap-4"
             >
-                {/* TODO: change this spinner to a card or cards with animate-pulse */}
+                {/* TODO: change this spinner to a card or cards with animate-pulse (wait for the final product of the card to make it look alike) */}
                 <Loader2 className="h-24 w-24 animate-spin" />
                 <p className="text-2xl">Loading your files...</p>
             </div>

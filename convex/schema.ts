@@ -17,14 +17,20 @@ export default defineSchema({
         name: v.string(),
         type: fileTypes,
         orgId: v.string(),
-        fileId: v.id("_storage")
-    }).index("by_orgId", ["orgId"]),
+        fileId: v.id("_storage"),
+        forDeleted: v.optional(v.boolean()),
+        userId: v.optional(v.id("users"))
+    })
+        .index("by_orgId", ["orgId"])
+        .index("by_forDeleted", ["forDeleted"])
+        .index("by_fileId", ["fileId"]),
 
     favorites: defineTable({
         fileId: v.id("files"),
         orgId: v.string(),
         userId: v.id("users")
-    }).index('by_userId_orgId_fileId', ["userId", "orgId", "fileId"]),
+    })
+        .index('by_userId_orgId_fileId', ["userId", "orgId", "fileId"]),
 
     users: defineTable({
         tokenIdentifier: v.string(),
@@ -32,5 +38,8 @@ export default defineSchema({
             orgId: v.string(),
             role: roles
         })),
-    }).index('by_tokenIdentifier', ["tokenIdentifier"])
+        name: v.optional(v.string()),
+        image: v.optional(v.string()),
+    })
+        .index('by_tokenIdentifier', ["tokenIdentifier"])
 });
