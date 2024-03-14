@@ -38,7 +38,16 @@ http.route({
                 case "organizationMembership.created":
                     await ctx.runMutation(internal.users.addOrgIdToUser, {
                         tokenIdentifier: `https://holy-chimp-28.clerk.accounts.dev|${result.data.public_user_data.user_id}`,
-                        orgId: result.data.organization.id //organization.id
+                        orgId: result.data.organization.id,
+                        role: result.data.role === "org:admin" ? "admin" : "member",
+                    })
+                    break;
+
+                case "organizationMembership.updated":
+                    await ctx.runMutation(internal.users.updateRoleInOrgforUser, {
+                        tokenIdentifier: `https://holy-chimp-28.clerk.accounts.dev|${result.data.public_user_data.user_id}`,
+                        orgId: result.data.organization.id,
+                        role: result.data.role === "org:admin" ? "admin" : "member",
                     })
                     break;
             }

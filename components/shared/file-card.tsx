@@ -36,16 +36,18 @@ import { FunctionReference } from "convex/server"
 import { toast } from "sonner"
 import { ReactNode } from "react"
 import Image from "next/image"
-
-type FileCardProps = {
-    file: Doc<"files">
-}
+import { Protect } from "@clerk/nextjs";
 
 function getFileUrl(fileId: Id<"_storage">  /* Doc<"files">["_id"] */): string {
     return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${fileId}`
 }
 
-export default function FileCard({ file }: FileCardProps) {
+type FileCardProps = {
+    file: Doc<"files">,
+    allFavorites: Doc<"favorites">[]
+}
+
+export default function FileCard({ file, allFavorites }: FileCardProps) {
     const deleteFile = useMutation(api.files.deleteFile)
     const toogleFavorite = useMutation(api.files.toogleFavorite)
 
@@ -55,6 +57,12 @@ export default function FileCard({ file }: FileCardProps) {
         "csv": <GanttChartIcon />,
         'docx': <TextIcon />,
     } as Record<Doc<"files">["type"], ReactNode>
+
+
+    function isFavorited(fileId: Id<"files">) {
+        return allFavorites.some(favorite => favorite.fileId === fileId)
+    }
+
 
     return (
         <Card>
@@ -66,6 +74,7 @@ export default function FileCard({ file }: FileCardProps) {
                     toogleFavorite={toogleFavorite}
                     fileId={file._id}
                     fileIdStorage={file.fileId}
+                    isFavorited={isFavorited(file._id)}
                 />
             </CardHeader>
             <CardContent className="h-[200px] flex justify-center items-center">
@@ -96,7 +105,7 @@ export default function FileCard({ file }: FileCardProps) {
     )
 }
 
-function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage }: {
+function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage, isFavorited }: {
     deleteFile: ReactMutation<FunctionReference<"mutation", "public", {
         fileId: Id<"files">;
     }, null>>,
@@ -105,6 +114,7 @@ function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage }: 
     }, null>>,
     fileId: Id<"files">,
     fileIdStorage: Id<"_storage">,
+    isFavorited: boolean
 }) {
     return (
         <AlertDialog>
@@ -113,12 +123,18 @@ function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage }: 
                 <DropdownMenuContent>
                     <DropdownMenuLabel>File Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <AlertDialogTrigger asChild>
-                        <DropdownMenuItem className="flex gap-1 text-destructive bg-destructive-foreground cursor-pointer">
-                            <Trash2Icon className="w-4 h-4" />Delete
-                        </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <DropdownMenuSeparator />
+                    <Protect
+                        role="org:admin"
+                        fallback={<></>}
+                    >
+                        <AlertDialogTrigger asChild>
+                            <DropdownMenuItem className="flex gap-1 text-destructive bg-destructive-foreground cursor-pointer">
+                                <Trash2Icon className="w-4 h-4" />Delete
+                            </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <DropdownMenuSeparator />
+                    </Protect>
+                    
                     <DropdownMenuItem
                         onClick={() => {
                             // open new tab to the file location on convex
@@ -135,7 +151,7 @@ function FileCardActions({ deleteFile, toogleFavorite, fileId, fileIdStorage }: 
                         }}
                         className="flex gap-1 cursor-pointer"
                     >
-                        <StarIcon className="w-4 h-4" />Favorite
+                        <StarIcon className={`w-4 h-4 ${isFavorited ? "fill-primary" : ""}`} />{isFavorited ? "Remove Favorite" : "Set Favorite"}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

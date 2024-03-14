@@ -10,16 +10,17 @@ import Image from "next/image";
 
 type DisplayFilesProps = {
     searchQuery: string;
-    favorites?: boolean;
+    favoritesOnly?: boolean;
 }
 
-export default /* async */ function DisplayFiles({ searchQuery, favorites = false }: DisplayFilesProps) {
+export default /* async */ function DisplayFiles({ searchQuery, favoritesOnly = false }: DisplayFilesProps) {
     const { isLoaded: orgLoaded, organization } = useOrganization()
     const { isLoaded: userLoaded, user } = useUser()
 
     let orgId: string | undefined = (orgLoaded && userLoaded) ? organization?.id ?? user?.id : undefined
 
-    const files = useQuery(api.files.getFiles, orgId ? { favorites: favorites, orgId, query: searchQuery } : "skip")
+    const files = useQuery(api.files.getFiles, orgId ? { favorites: favoritesOnly, orgId, query: searchQuery } : "skip")
+    const allFavorites = useQuery(api.files.getAllFavorites, orgId ? { orgId } : "skip")
 
     if (files === undefined) {
         return (
@@ -42,20 +43,30 @@ export default /* async */ function DisplayFiles({ searchQuery, favorites = fals
                     height={200}
                     alt="Image of a picture and directory icon"
                 />
-                <p className="text-2xl">No file/s to show now</p>
+                <p className="text-2xl">No file/s to show here</p>
             </div>
         )
     }
 
-
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {files?.map((file: Doc<"files">) => (
+            {/* {files?.map((file: Doc<"files">) => (
                 <FileCard
                     key={file._id}
                     file={file}
+                    allFavorites={allFavorites ?? []}
                 />
-            ))}
+            ))} */}
+            {files?.reduce((allFiles: JSX.Element[], file: Doc<"files">) => {
+                allFiles.push(
+                    <FileCard
+                        key={file._id}
+                        file={file}
+                        allFavorites={allFavorites ?? []}
+                    />
+                )
+                return allFiles
+            }, new Array<JSX.Element>())}
         </div>
 
     )

@@ -13,7 +13,7 @@ export default function Favorites() {
 
       {/* to use suspense the component must be async function */}
       {/* <Suspense fallback={<div className="text-4xl">Loading files...</div>}> */}
-      <DisplayFiles searchQuery={""} favorites={true} />
+      <DisplayFiles searchQuery={""} favoritesOnly={true} />
       {/* </Suspense> */}
     </section>
   )

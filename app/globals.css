@@ -83,7 +83,16 @@
 @layer utilities {
   /* ===== UTILITIES */
   .page-container{
-    @apply container mx-auto pt-12;
+    @apply container px-2 lg:px-10 lg:mx-auto pt-12;
+  }
+
+  /* ===== CLERK REWRITES */
+  .cl-organizationSwitcher-root{
+    @apply flex justify-center items-center bg-black;
+  }
+
+  .cl-organizationPreviewMainIdentifier .cl-organizationPreviewMainIdentifier__organizationSwitcher{
+    @apply text-green-500;
   }
 
   /* ===== ALIGNMENTS */

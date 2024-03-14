@@ -6,19 +6,19 @@ import MobileNav from "./mobile-nav";
 export default function Header() {
     return (
         <header className="border-secondary border-b-2 py-4">
-            <div className="px-10 w-full flex justify-between items-center">
+            <div className="px-5 lg:px-10 w-full flex justify-between items-center">
                 <div>
                     FileDrive
                 </div>
-                <div className="flex justify-center items-center gap-2">
+                <div className="flex justify-center items-start gap-2">
                     <SignedIn>
-                        <div className="hidden lg:flex items-center">
+                        <div className="hidden lg:flex items-center justify-center gap-2">
+                            {/* figure out how to center these three clows :-| */}
                             <OrganizationSwitcher />
                             <UserButton />
-                        </div>
-                        <div className="hidden lg:block">
                             <ModeToggle />
                         </div>
+
                         <MobileNav />
                     </SignedIn>
 
