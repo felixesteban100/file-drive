@@ -9,13 +9,15 @@ import {
 } from "@/components/ui/sheet"
 import { navLinks } from "@/constants"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { ModeToggle } from "../mode-toogle"
 import { MenuIcon } from "lucide-react"
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs"
 
 export default function MobileNav() {
     const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const params = new URLSearchParams(searchParams)
 
     return (
         <Sheet>
@@ -38,7 +40,7 @@ export default function MobileNav() {
                             return (
                                 <li key={link.route} className={`${isActive && "underline"} p-18 flex whitespace-nowrap`}>
                                     <SheetClose asChild>
-                                        <Link href={link.route} className="flex size-full gap-4 p-4 cursor-pointer">
+                                        <Link href={`${link.route}${params.toString()}`} className="flex size-full gap-4 p-4 cursor-pointer">
                                             {link.label}
                                         </Link>
                                     </SheetClose>

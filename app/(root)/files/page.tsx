@@ -7,6 +7,11 @@ import UploadButton from "@/components/shared/upload-button";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Image from "next/image";
 // import { Suspense } from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Files',
+}
 
 export default function Files({
   searchParams,

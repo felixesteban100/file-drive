@@ -2,6 +2,11 @@ import DisplayFiles from "@/components/shared/display-files";
 import PageTitle from "@/components/shared/page-title";
 import SearchBar from "@/components/shared/search-bar";
 import UploadButton from "@/components/shared/upload-button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Favorites',
+}
 
 export default function Favorites({
   searchParams,

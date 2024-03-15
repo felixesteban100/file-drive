@@ -1,12 +1,12 @@
 'use client'
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { navLinks } from "@/constants";
 import { Button } from "../ui/button";
 import { File, HomeIcon, StarIcon, Trash2Icon } from "lucide-react";
 import { ReactNode } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn } from "@clerk/nextjs";
 
 export default function Sidebar() {
     const pathname = usePathname()
@@ -20,7 +20,7 @@ export default function Sidebar() {
 
     return (
         <>
-            <aside className="hidden lg:block h-full">
+            <aside className="hidden lg:block h-full top-0">
                 <nav
                     // size-full
                     className="w-[12rem] mt-14"
@@ -69,9 +69,12 @@ type NavbarLinkELementProps = {
 }
 
 function NavbarLinkELement({ isActive, route, label, icon }: NavbarLinkELementProps) {
+    const searchParams = useSearchParams()
+    const params = new URLSearchParams(searchParams)
+
     return (
-        <Button key={route} variant={"link"} className={`pl-0 text-2xl ${isActive ? "underline font-bold" : ""}`}>
-            <Link href={route} className="flex gap-1 items-center">
+        <Button key={route} variant={"link"} className={`text-foreground pl-0 text-2xl ${isActive ? "underline font-bold" : ""}`}>
+            <Link href={`${route}?${params.toString()}`} className="flex gap-1 items-center">
                 {icon}
                 {label}
             </Link>
