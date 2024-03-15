@@ -10,7 +10,7 @@ export default function PageTitle({ title, otherChildren }: PageTitleProps) {
             <h1 className="text-4xl font-bold">{title}</h1>
             {otherChildren?.map((child: JSX.Element, index: number) => {
                 return (
-                    <div key={index}>
+                    <div key={child.key}>
                         {child}
                     </div>
                 )

@@ -19,7 +19,7 @@ export default function Favorites({
     <section className="page-container">
       <PageTitle
         title={"Favorites"}
-        otherChildren={[<SearchBar />/* , <UploadButton /> */]}
+        otherChildren={[<SearchBar key="search-bar-favorites" />/* , <UploadButton /> */]}
       />
 
       {/* to use suspense the component must be async function */}

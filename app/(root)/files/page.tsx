@@ -25,7 +25,7 @@ export default function Files({
       <SignedIn>
         <PageTitle
           title={"Your Files"}
-          otherChildren={[<SearchBar />, <UploadButton />]}
+          otherChildren={[<SearchBar key="search-bar-files" />, <UploadButton key="upload-button-files" />]}
         />
 
         {/* to use suspense the component must be async function */}
