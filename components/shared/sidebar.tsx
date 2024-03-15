@@ -6,7 +6,7 @@ import { navLinks } from "@/constants";
 import { Button } from "../ui/button";
 import { File, HomeIcon, StarIcon, Trash2Icon } from "lucide-react";
 import { ReactNode } from "react";
-import { SignedIn } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 export default function Sidebar() {
     const pathname = usePathname()
@@ -19,11 +19,14 @@ export default function Sidebar() {
     } as Record<string, ReactNode>
 
     return (
-        <SignedIn>
-            <aside className="hidden lg:block  h-screen">
-                <nav className="size-full mt-14 ">
-                    <menu className="w-full flex flex-col justify-start items-start gap-5">
-                        {navLinks.map((link: { label: string, route: string }) => {
+        <>
+            <aside className="hidden lg:block h-full">
+                <nav
+                    // size-full
+                    className="w-[12rem] mt-14"
+                >
+                    <menu className="flex flex-col justify-start items-start gap-5">
+                        {navLinks.slice(0, 2).map((link: { label: string, route: string }) => {
                             const isActive = link.route === pathname
 
                             return (
@@ -36,10 +39,25 @@ export default function Sidebar() {
                                 />
                             )
                         })}
+                        <SignedIn>
+                            {navLinks.slice(2).map((link: { label: string, route: string }) => {
+                                const isActive = link.route === pathname
+
+                                return (
+                                    <NavbarLinkELement
+                                        key={link.label}
+                                        isActive={isActive}
+                                        route={link.route}
+                                        label={link.label}
+                                        icon={linkIcons[link.label]}
+                                    />
+                                )
+                            })}
+                        </SignedIn>
                     </menu>
                 </nav>
             </aside>
-        </SignedIn>
+        </>
     )
 }
 
