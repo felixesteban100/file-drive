@@ -55,6 +55,7 @@ export default function FileCard({ file, allFavorites }: FileCardProps) {
                     fileIdStorage={file.fileId}
                     isFavorited={isFavorited(allFavorites, file._id)}
                     forDeleted={file.forDeleted}
+                    userId={file.userId}
                 />
             </CardHeader>
             <CardContent className="h-[200px] flex justify-center items-center">

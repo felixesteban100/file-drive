@@ -13,7 +13,7 @@ import {
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Search } from "lucide-react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 
 
 const formSchema = z.object({
@@ -24,6 +24,7 @@ export default function SearchBar() {
     const searchParams = useSearchParams()
     const { replace } = useRouter()
     const params = new URLSearchParams(searchParams)
+    const pathname = usePathname()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -39,7 +40,7 @@ export default function SearchBar() {
             params.delete('query')
         }
 
-        replace(`/files?${params.toString()}`)
+        replace(`${pathname}?${params.toString()}`)
     }
 
     return (

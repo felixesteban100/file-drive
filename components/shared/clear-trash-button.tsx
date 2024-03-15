@@ -13,9 +13,11 @@ export default function ClearTrash() {
     const { isLoaded: userLoaded, user } = useUser()
 
     let orgId: string | undefined = (orgLoaded && userLoaded) ? organization?.id ?? user?.id : undefined
-    
-    const clearTrash = useMutation(api.files.clearTrash)
+
+    // const clearTrash = useMutation(api.files.clearTrash)
     const filesforDeletion = useQuery(api.files.getFiles, orgId ? { favorites: false, orgId, query: "", deleted: true } : "skip")
+
+    const me = useQuery(api.users.getMe)
 
     if (filesforDeletion === undefined) {
         return (
@@ -27,11 +29,18 @@ export default function ClearTrash() {
         )
     }
 
-    if(filesforDeletion && filesforDeletion.length < 1) return <></>
+    if (filesforDeletion && filesforDeletion.length < 1) return <></>
+
+    // console.log("orgId", orgId)
 
     return (
         <Protect
-            role="org:admin"
+            // role="org:admin"
+            condition={(check) => {
+                return check({
+                    role: "org:admin"
+                }) || (user?.id === me?._id) && (orgId === undefined)
+            }}
             fallback={<></>}
         >
             <AlertDialog>
@@ -43,7 +52,12 @@ export default function ClearTrash() {
                     </Button>
                 </AlertDialogTrigger>
                 <Protect
-                    role="org:admin"
+                    // role="org:admin"
+                    condition={(check) => {
+                        return check({
+                            role: "org:admin"
+                        }) || (user?.id === me?._id) && (orgId === undefined)
+                    }}
                     fallback={<></>}
                 >
                     <AlertDialogContent>
@@ -58,8 +72,9 @@ export default function ClearTrash() {
                             <AlertDialogAction
                                 className="bg-destructive text-destructive-foreground"
                                 onClick={async () => {
-                                    await clearTrash()
-                                    toast("Trash has been cleared", {
+                                    // await clearTrash()
+                                    // toast("Trash has been cleared", {
+                                    toast("This doesn't work", {
                                         description: "The trash can files are gone forever",
                                         duration: 100000,
                                     })

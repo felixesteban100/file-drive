@@ -22,23 +22,28 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { toast } from "sonner"
 import { Protect } from "@clerk/nextjs";
 import { getFileUrl } from "./file-card";
 
 
-export default function FileCardActions({ fileId, fileIdStorage, isFavorited, forDeleted }: {
+export default function FileCardActions({ fileId, fileIdStorage, isFavorited, forDeleted, userId }: {
     fileId: Id<"files">,
     fileIdStorage: Id<"_storage">,
     isFavorited: boolean;
-    forDeleted?: boolean
+    forDeleted?: boolean;
+    userId: Id<"users"> | undefined,
 }) {
     const deleteFile = useMutation(api.files.deleteFile)
     const deleteFilePermanently = useMutation(api.files.deleteFilePermanently)
     const restoreFile = useMutation(api.files.restoreFile)
     const toogleFavorite = useMutation(api.files.toogleFavorite)
+
+    const me = useQuery(api.users.getMe)
+
+    if(!me) return <p>You are not logged in</p>
 
     return (
         <AlertDialog>
@@ -59,7 +64,12 @@ export default function FileCardActions({ fileId, fileIdStorage, isFavorited, fo
                     </DropdownMenuItem>
                     
                     <Protect
-                        role="org:admin"
+                        // role="org:admin"
+                        condition={(check) => {
+                            return check({
+                                role: "org:admin"
+                            }) || userId === me._id
+                        }}
                         fallback={<></>}
                     >
                         {forDeleted ?
@@ -107,7 +117,12 @@ export default function FileCardActions({ fileId, fileIdStorage, isFavorited, fo
                 </DropdownMenuContent>
             </DropdownMenu>
             <Protect
-                role="org:admin"
+                // role="org:admin"
+                condition={(check) => {
+                    return check({
+                        role: "org:admin"
+                    }) || userId === me?._id
+                }}
                 fallback={<></>}
             >
                 <AlertDialogContent>

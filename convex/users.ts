@@ -98,4 +98,17 @@ export const getUserProfile = query({
             image: user?.image
         }
     }
-}) 
+})
+
+export const getMe = query({
+    args: {},
+    async handler(ctx) {
+        const idenity = await ctx.auth.getUserIdentity()
+        if (!idenity) return null
+
+        const user = await getUser(ctx, idenity.tokenIdentifier)
+        if(!user) return null
+        
+        return user
+    }
+})
