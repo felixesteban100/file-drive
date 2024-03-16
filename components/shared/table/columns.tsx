@@ -54,6 +54,7 @@ export const columns: ColumnDef<Doc<"files"> & { isFavorited: boolean }>[] = [
                 fileIdStorage={row.original.fileId}
                 isFavorited={row.original.isFavorited}
                 forDeleted={row.original.forDeleted}
+                userId={row.original.userId}
             />
         },
     }
