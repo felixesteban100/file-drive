@@ -56,6 +56,18 @@ export default function UploadButton() {
 
     const fileRef = form.register("file")
 
+    function takeNameFromFilePath(filePath: string) {
+        const regex = /\\([^\\]+)(\.[a-zA-Z0-9]+)$/; 
+        const match = filePath.match(regex);
+
+        if (match) {
+            const extractedText = match[1];
+            return extractedText; 
+        } else {
+            return null
+        }
+    }
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const postUrl = await generateUploadUrl();
 
@@ -71,7 +83,7 @@ export default function UploadButton() {
 
         const { storageId } = await result.json();
 
-        console.log(values.file[0].type)
+        // console.log(values.file[0])
 
         const types = {
             "image/png": "image",
@@ -93,10 +105,10 @@ export default function UploadButton() {
 
             toast("File uploaded successfully", {
                 description: 'Now everyone can view your file',
-                classNames: {
-                    toast: "group-[.toaster]:bg-success group-[.toaster]:text-success-foreground",
+                /* classNames: {
+                    toast: "group-[.toaster]:bg-background group-[.toaster]:text-success-foreground",
                     description: "group-[.toast]:text-success-foreground",
-                },
+                }, */
                 duration: 100000,
             })
         } catch (error) {
@@ -104,10 +116,10 @@ export default function UploadButton() {
 
             toast("File didn't upload successfully", {
                 description: 'Something went wrong, try again please',
-                classNames: {
+                /* classNames: {
                     toast: "group-[.toaster]:bg-destructive group-[.toaster]:text-destructive-foreground",
                     description: "group-[.toast]:text-destructive-foreground",
-                },
+                }, */
                 duration: 100000,
             })
         }
@@ -134,13 +146,15 @@ export default function UploadButton() {
                                 <FormItem>
                                     <FormLabel>Title</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Title..." {...field} />
+                                        <Input
+                                            {...field}
+                                            placeholder="Title..."
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-
                         <FormField
                             control={form.control}
                             name="file"
@@ -149,8 +163,13 @@ export default function UploadButton() {
                                     <FormLabel>File</FormLabel>
                                     <FormControl>
                                         <Input
-                                            type="file"
                                             {...fileRef}
+                                            type="file"
+                                            onChange={(e) => {
+                                                const fileNameDetected = takeNameFromFilePath(e.target.value)
+
+                                                if (fileNameDetected) form.setValue("title", fileNameDetected)
+                                            }}
                                         />
                                     </FormControl>
                                     <FormMessage />
