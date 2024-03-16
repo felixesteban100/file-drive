@@ -40,7 +40,7 @@ export default function MobileNav() {
                             return (
                                 <li key={link.route} className={`${isActive && "underline"} p-18 flex whitespace-nowrap`}>
                                     <SheetClose asChild>
-                                        <Link href={`${link.route}${params.toString()}`} className="flex size-full gap-4 p-4 cursor-pointer">
+                                        <Link href={`${link.route}?${params.toString()}`} className="flex size-full gap-4 p-4 cursor-pointer">
                                             {link.label}
                                         </Link>
                                     </SheetClose>

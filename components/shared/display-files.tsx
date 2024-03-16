@@ -64,7 +64,7 @@ export default /* async */ function DisplayFiles({ searchQuery, favoritesOnly = 
 
     return (
         <Tabs value={params.get("tab") ?? "grid"} onValueChange={onSubmit} defaultValue="grid" className="">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-5">
                 <TabsList>
                     <TabsTrigger value="grid" className="flex gap-2 items-center"><GridIcon /> Grid</TabsTrigger>
                     <TabsTrigger value="table" className="flex gap-2 items-center"><RowsIcon />Table</TabsTrigger>

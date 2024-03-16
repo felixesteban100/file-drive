@@ -49,7 +49,7 @@ export default function FileCard({ file, allFavorites }: FileCardProps) {
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between items-center w-full">
-                <CardTitle className="flex justify-start items-center gap-2 text-base font-normal truncate text-ellipsis overflow-hidden ">{typeIcons[file.type]}{file.name/* .slice(0, 18) */}{/* {file.name.length > 18 && "..."} */}</CardTitle>
+                <CardTitle className="flex justify-start items-center gap-2 text-base font-normal truncate ">{typeIcons[file.type]}{file.name/* .slice(0, 18) */}{/* {file.name.length > 18 && "..."} */}</CardTitle>
                 <FileCardActions
                     fileId={file._id}
                     fileIdStorage={file.fileId}
